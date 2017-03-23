@@ -120,6 +120,16 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
+        } else {
+            readDataExternal();
+        }
+
+
         super.onCreate(savedInstanceState);
         fakeR = new FakeR(this);
         setContentView(fakeR.getId("layout", "multiselectorgrid"));
@@ -160,6 +170,20 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 
                     // Limit if we go faster than a page a second
                     shouldRequestThumb = speed < visibleItemCount;
+                }
+            }
+
+            @Override
+            public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+                switch (requestCode) {
+                    case MY_PERMISSIONS_REQUEST_READ_MEDIA:
+                        if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                           //TODO
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
             }
         });
